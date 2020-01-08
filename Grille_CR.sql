@@ -1,6 +1,5 @@
 ﻿
 /* Code création de grille à ne pas toucher descendre plus bas pour mettre paramètre*/
-/* Pour la création de la grille le code provient de https://gist.github.com/mjumbewu/1761802ea06fb78c596f9cf8c9b2e769 */
 CREATE OR REPLACE FUNCTION generate_hexgrid(width float, xmin float, ymin float, xmax float, ymax float, srid int default 32188)
 RETURNS TABLE(
   gid text,
@@ -81,7 +80,7 @@ Create Table grille as
  SELECT gid as id_grille, St_AsText(ST_Transform(geom, 32188)) AS geom
     FROM generate_hexgrid(
       -- ENTREZ LA LONGUEUR DE LA DISTANCE INTERNE DES MAILLES 
-      130,
+      220,
       -- ENTREZ LES COORDONNÉES: Coin gauche bas (ST_X) et Coin droit bas (ST_Y)
       ST_X(ST_Transform(ST_SetSRID(ST_GeomFromText('POINT(259889 5021675)'), 32188), 32188)),
       ST_Y(ST_Transform(ST_SetSRID(ST_GeomFromText('POINT(316483 5027841)'), 32188), 32188)),
@@ -116,7 +115,7 @@ CREATE TABLE segment
   );
 
 COPY segment
-FROM '/Users/Shared/Etudedecas2/Segment_Offre_Niv2.csv' csv header delimiter ',';
+FROM '/Users/Shared/Projet_Laval/Seg_Laval_200.csv' csv header delimiter ',';  /*Spécifiez la location de votre fichier*/
 
 /* Créer 4 colonnes (xorig_cor, yorig_cor,xdest_cor et ydest_cor) pour pouvoir calculer la nouvelle position des corridors*/
 
@@ -827,4 +826,4 @@ from grille_zone4_sansdoublon where doublon <> 0 group by id_grille,geom
 order by id_grille;
 
 
-select id_grille, st_astext(geom), poids_cellule from grille_zone1_final;
+select id_grille, st_astext(geom), poids_cellule from grille_zone4_final;
